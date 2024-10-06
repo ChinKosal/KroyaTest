@@ -106,6 +106,8 @@ dependencies {
 
     // for container transform
     implementation("androidx.compose.animation:animation:1.3.0")
+
+    implementation ("androidx.compose.material3:material3:<latest_version>")
 }
 // Allow references to generated code
 kapt {

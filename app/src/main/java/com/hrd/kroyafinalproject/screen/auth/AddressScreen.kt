@@ -35,9 +35,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.hrd.kroyafinalproject.Routes
 import com.hrd.kroyafinalproject.ui.theme.InterLight
 import com.hrd.kroyafinalproject.ui.theme.InterMedium
 import com.hrd.kroyafinalproject.ui.theme.InterSemiBold
+import okhttp3.Route
 
 enum class ContainerState {
     Fab,
@@ -46,119 +49,93 @@ enum class ContainerState {
 
 @SuppressLint("RememberReturnType")
 @Composable
-fun AddressScreen(){
-    var containerState by remember { mutableStateOf(ContainerState.Fab) }
-    var transition = updateTransition(targetState = containerState)
-
-    // Define colors for each state
-    val padding by transition.animateDp(label = "" , transitionSpec = {
-        tween(500)
-    }
-    ) { state ->
-        when (state) {
-           ContainerState.Fab -> {
-               0.dp
-           }
-            ContainerState.Fullscreen -> {
-                0.dp
-            }
-        }
-    }
-
-
+fun AddressScreen(navController: NavController){
     Box (modifier = Modifier
         .fillMaxSize()
-        .padding(padding.value.dp)
+        .padding(0.dp, 12.dp, 0.dp, 12.dp)
         ){
-        transition.AnimatedContent {
-            when (it){
-                ContainerState.Fab -> {
-                    Column (modifier = Modifier.fillMaxSize().background(Color.White)
-                        .padding(horizontal = 12.dp, vertical = 12.dp)) {
-                        Row (modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.Transparent)
-                        ){
-                            Icon(imageVector = Icons.Default.ArrowBack, contentDescription =  "ArrowBack" )
+        Column (modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(horizontal = 12.dp, vertical = 12.dp)) {
+            Row (modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.Transparent)
+            ){
+                Icon(imageVector = Icons.Default.ArrowBack, contentDescription =  "ArrowBack" )
+            }
+            Row (modifier = Modifier
+                .fillMaxWidth()
+                .drawBehind {
+                    val borderSize = 1.dp.toPx()
+                    drawLine(
+                        color = Color.Gray,
+                        start = Offset(0f, size.height),
+                        end = Offset(size.width, size.height),
+                        strokeWidth = borderSize
+                    )
+                }
+                .background(Color.Transparent),
+                horizontalArrangement = Arrangement.SpaceBetween){
+                Box(modifier = Modifier
+                    .background(Color.Transparent)
+                    .padding(0.dp, 20.dp, 0.dp, 20.dp)){
+                    Box(modifier = Modifier
+                        .background(Color.Transparent)
+                    ){
+                        Box(modifier = Modifier.background(Color.Transparent)){
+                            Text(text = "My Address", fontSize = 16.sp, fontFamily = InterSemiBold)
                         }
-                        Row (modifier = Modifier
-                            .fillMaxWidth()
-                            .drawBehind {
-                                val borderSize = 1.dp.toPx()
-                                drawLine(
-                                    color = Color.Gray,
-                                    start = Offset(0f, size.height),
-                                    end = Offset(size.width, size.height),
-                                    strokeWidth = borderSize
-                                )
-                            }
-                            .background(Color.Transparent),
-                            horizontalArrangement = Arrangement.SpaceBetween){
-                            Box(modifier = Modifier
-                                .background(Color.Transparent)
-                                .padding(0.dp, 20.dp, 0.dp, 20.dp)){
-                                Box(modifier = Modifier
-                                    .background(Color.Transparent)
-                                ){
-                                    Box(modifier = Modifier.background(Color.Transparent)){
-                                        Text(text = "My Address", fontSize = 16.sp, fontFamily = InterSemiBold)
-                                    }
-                                    Row (modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.End) {
-                                        Icon(imageVector = Icons.Default.Add, contentDescription = "Add",
-                                            tint = Color.Green , modifier = Modifier.clickable {
-                                                containerState = ContainerState.Fullscreen
-                                            })
-                                        Text(text = "Add",  color = Color.Black, fontSize = 16.sp, fontFamily = InterMedium,
-                                            fontWeight = FontWeight.Medium,  modifier = Modifier.clickable {
-                                                containerState = ContainerState.Fullscreen
-                                            })
-                                    }
-                                }
-                            }
-                        }
-                        Row (modifier = Modifier
-                            .fillMaxWidth()
-                            .padding()
-                            .background(Color.Transparent)
-                            .drawBehind {
-                                val borderSize = 1.dp.toPx()
-                                drawLine(
-                                    color = Color.Gray,
-                                    start = Offset(0f, size.height),
-                                    end = Offset(size.width, size.height),
-                                    strokeWidth = borderSize
-                                )
-                            },
-                        ){
-                            Box(modifier = Modifier
-                                .background(Color.Transparent)
-                                .padding(0.dp, 12.dp, 0.dp, 10.dp)
-                                .fillMaxWidth(),
-                                contentAlignment = Alignment.CenterStart
-                            ){
-                                Box(modifier = Modifier.background(Color.Transparent)){
-                                    Column(modifier = Modifier) {
-                                        Text(text = "HRD Center, St22",  fontSize = 16.sp, fontFamily = InterSemiBold)
-                                        LimitedText(text = "Russian federation blvd (#10),steadfast")
-                                    }
-                                }
-                                Box(modifier = Modifier.background(Color.Transparent)){
-                                    Row (modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.End,
-                                        verticalAlignment = Alignment.CenterVertically) {
-                                        Text(text = "Office", color = Color.Green, fontSize = 16.sp,
-                                            fontFamily = InterMedium)
-                                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = "MoreVert",
-                                            tint = Color.Gray)
-                                    }
-                                }
-                            }
+                        Row (modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End) {
+                            Icon(imageVector = Icons.Default.Add, contentDescription = "Add",
+                                tint = Color.Green , modifier = Modifier.clickable {
+                                    navController.navigate(Routes.Map)
+                                })
+                            Text(text = "Add",  color = Color.Black, fontSize = 16.sp, fontFamily = InterMedium,
+                                fontWeight = FontWeight.Medium,  modifier = Modifier.clickable {
+                                    navController.navigate(Routes.Map)
+                                })
                         }
                     }
                 }
-                ContainerState.Fullscreen -> {
-                    MapApp()
+            }
+            Row (modifier = Modifier
+                .fillMaxWidth()
+                .padding()
+                .background(Color.Transparent)
+                .drawBehind {
+                    val borderSize = 1.dp.toPx()
+                    drawLine(
+                        color = Color.Gray,
+                        start = Offset(0f, size.height),
+                        end = Offset(size.width, size.height),
+                        strokeWidth = borderSize
+                    )
+                },
+            ){
+                Box(modifier = Modifier
+                    .background(Color.Transparent)
+                    .padding(0.dp, 12.dp, 0.dp, 10.dp)
+                    .fillMaxWidth(),
+                    contentAlignment = Alignment.CenterStart
+                ){
+                    Box(modifier = Modifier.background(Color.Transparent)){
+                        Column(modifier = Modifier) {
+                            Text(text = "HRD Center, St22",  fontSize = 16.sp, fontFamily = InterSemiBold)
+                            LimitedText(text = "Russian federation blvd (#10),steadfast")
+                        }
+                    }
+                    Box(modifier = Modifier.background(Color.Transparent)){
+                        Row (modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.CenterVertically) {
+                            Text(text = "Office", color = Color.Green, fontSize = 16.sp,
+                                fontFamily = InterMedium)
+                            Icon(imageVector = Icons.Default.MoreVert, contentDescription = "MoreVert",
+                                tint = Color.Gray)
+                        }
+                    }
                 }
             }
         }
@@ -182,9 +159,3 @@ fun LimitedText(text: String, maxChars: Int = 29) {
     )
 }
 
-
-@Preview
-@Composable
-fun AddressScreenPreview(){
-    AddressScreen()
-}
